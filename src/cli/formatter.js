@@ -9,8 +9,9 @@ import { hasSignificantHazards, getTotalHazardCount } from '../core/hazards.js'
 export function formatResults(result, options) {
   const { stats, hazards, results } = result
   
-  // Show processing progress (simplified for final summary)
+  // Show processing progress 
   console.log('⏳ Processing completed\n')
+  console.log(`🤖→👤 Human Touch - Processing ${stats.total} HTML files...`)
   
   // Main summary
   console.log('📊 SUMMARY:')

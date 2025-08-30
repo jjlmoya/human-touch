@@ -4,28 +4,44 @@
  * Main library exports for programmatic usage
  */
 
-export { 
+// Import functions first
+import { 
   normalizeText, 
   normalizeHtml, 
   DEFAULT_CONFIG 
 } from './core/normalizer.js'
 
-export { 
+import { 
   detectHazards, 
   hasSignificantHazards, 
   getTotalHazardCount,
   HAZARDS 
 } from './core/hazards.js'
 
-export { 
+import { 
   SAFE_REPLACEMENTS, 
   AGGRESSIVE_REPLACEMENTS 
 } from './core/replacements.js'
 
-export { 
+import { 
   processFiles, 
   processFile 
 } from './utils/file-processor.js'
+
+// Re-export everything
+export { 
+  normalizeText, 
+  normalizeHtml, 
+  DEFAULT_CONFIG,
+  detectHazards, 
+  hasSignificantHazards, 
+  getTotalHazardCount,
+  HAZARDS,
+  SAFE_REPLACEMENTS, 
+  AGGRESSIVE_REPLACEMENTS,
+  processFiles, 
+  processFile 
+}
 
 // Convenience function for quick text normalization
 export function humanize(text, options = {}) {
