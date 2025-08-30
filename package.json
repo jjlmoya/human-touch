@@ -1,0 +1,75 @@
+{
+  "name": "human-touch",
+  "version": "1.0.0",
+  "description": "Transform AI-generated text into human-readable content by normalizing Unicode characters, fixing typography, and removing digital artifacts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "human-touch": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./cli": {
+      "import": "./dist/cli.mjs",
+      "require": "./dist/cli.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write src/**/*.js",
+    "prepublishOnly": "npm run build && npm test",
+    "release": "npm version patch && npm publish"
+  },
+  "keywords": [
+    "text",
+    "normalizer",
+    "unicode",
+    "typography",
+    "ai-text",
+    "human-readable",
+    "character-cleanup",
+    "smart-quotes",
+    "build-tool",
+    "html-processor"
+  ],
+  "author": "jjlmoya",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jjlmoya/human-touch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jjlmoya/human-touch/issues"
+  },
+  "homepage": "https://github.com/jjlmoya/human-touch#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "glob": "^11.0.0",
+    "p-limit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "rollup": "^4.12.0",
+    "vitest": "^1.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
