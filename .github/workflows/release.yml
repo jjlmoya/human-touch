@@ -56,44 +56,34 @@ jobs:
       - name: 📄 Generate changelog
         id: changelog
         run: |
-          # Get the current version from package.json
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          
-          # Get the previous tag
-          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "v$CURRENT_VERSION" | head -n1)
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | head -n2 | tail -n1)
           
           if [ -z "$PREVIOUS_TAG" ]; then
-            echo "## 🎉 Initial Release" > CHANGELOG.md
-            echo "" >> CHANGELOG.md
-            echo "First public release of human-touch!" >> CHANGELOG.md
+            CHANGELOG="🎉 Initial Release
+
+          First public release of human-touch with verbose logging and modern Node.js support!"
           else
-            echo "## 🔄 Changes since $PREVIOUS_TAG" > CHANGELOG.md
-            echo "" >> CHANGELOG.md
-            
-            # Get commits since last tag
-            git log $PREVIOUS_TAG..HEAD --oneline --pretty=format:"- %s" >> CHANGELOG.md
-            
-            # If no commits, add a default message
-            if [ ! -s CHANGELOG.md ]; then
-              echo "- Version bump and maintenance updates" >> CHANGELOG.md
-            fi
+            CHANGELOG="🔄 Changes since $PREVIOUS_TAG
+
+          $(git log $PREVIOUS_TAG..HEAD --oneline --pretty=format:'- %s')"
           fi
           
-          # Set multiline output
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          cat CHANGELOG.md >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo 'changelog<<CHANGELOG_EOF'
+            echo "$CHANGELOG"
+            echo 'CHANGELOG_EOF'
+          } >> $GITHUB_OUTPUT
 
       - name: 🏷️ Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: "Release ${{ github.ref_name }}"
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📤 Publish to NPM
         run: npm publish --access public
