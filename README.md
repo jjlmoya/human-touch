@@ -41,6 +41,7 @@ AI-generated content often contains problematic Unicode characters that make tex
 - **Dry run** - preview changes without modifying files
 - **Backup creation** - save `.bak` files before changes
 - **Build integration** - fail builds on critical issues
+- **Verbose output** - detailed progress and troubleshooting info
 
 ## 📦 Installation
 
@@ -71,6 +72,9 @@ human-touch "dist/**/*.html"
 
 # Fail build if critical issues found
 human-touch --fail-on-hazards
+
+# Get detailed output for troubleshooting
+DEBUG=1 human-touch --dry-run
 ```
 
 #### CLI Options
@@ -226,6 +230,56 @@ Human Touch helps improve security by:
 - **Detecting bidirectional override characters** that can mask malicious code
 - **Normalizing text encoding** to prevent homograph attacks
 - **Safe HTML processing** that preserves code blocks and scripts
+
+## 🔧 Troubleshooting
+
+### Installation Issues
+
+If the CLI doesn't work after `npm install -g human-touch`:
+
+```bash
+# Check installation
+human-touch --version
+
+# If command not found, try:
+npm list -g human-touch        # Verify global installation
+npm install -g human-touch     # Reinstall globally
+
+# For permission errors (Unix/Mac):
+sudo npm install -g human-touch
+```
+
+### Verbose Output
+
+Get detailed information about what the tool is doing:
+
+```bash
+# See detailed processing information
+DEBUG=1 human-touch --dry-run
+
+# What you'll see:
+# - Node.js version and working directory
+# - File pattern matching results
+# - Per-file processing progress
+# - Error details with suggestions
+```
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| "No files found" | Check your patterns and current directory |
+| "Permission denied" | Ensure write access to target files |
+| "Module not found" | Run `npm install` in the project directory |
+| "Node version error" | Upgrade to Node.js 18+ |
+
+### Getting Help
+
+The CLI provides helpful context when errors occur:
+- Installation suggestions
+- Permission issue hints
+- File pattern debugging
+- Stack traces with `DEBUG=1`
 
 ## 🔧 Configuration
 

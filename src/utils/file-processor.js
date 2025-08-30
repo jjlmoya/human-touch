@@ -97,18 +97,24 @@ export async function processFiles(options = {}) {
   // Find all matching files
   const allFiles = []
   for (const pattern of config.patterns) {
+    console.log(`🔍 Looking for files matching pattern: ${pattern}`)
     const files = await glob(pattern, { nodir: true })
+    console.log(`   Found ${files.length} files`)
     allFiles.push(...files)
   }
   
   const uniqueFiles = [...new Set(allFiles)].sort()
+  console.log(`📋 Total unique files to process: ${uniqueFiles.length}`)
   
   if (uniqueFiles.length === 0) {
+    console.log('❌ No files found matching the specified patterns')
+    console.log('   Check that your patterns are correct and files exist in the current directory')
     return {
       success: false,
       message: 'No files found matching patterns',
       stats: { processed: 0, changed: 0, errors: 0, totalChanges: 0 },
-      hazards: { invisibles_bidi: 0, smart_quotes_attrs: 0, consecutive_nbsp: 0 }
+      hazards: { invisibles_bidi: 0, smart_quotes_attrs: 0, consecutive_nbsp: 0 },
+      totalFiles: 0
     }
   }
   
@@ -125,9 +131,20 @@ export async function processFiles(options = {}) {
     consecutive_nbsp: 0
   }
   
-  const processPromises = uniqueFiles.map(file => 
+  console.log(`⚡ Starting to process files (max ${config.maxConcurrency} concurrent)...`)
+  
+  const processPromises = uniqueFiles.map((file, index) => 
     limit(async () => {
+      console.log(`📄 Processing [${index + 1}/${uniqueFiles.length}]: ${file}`)
       const result = await processFile(file, config)
+      
+      if (result.error) {
+        console.log(`❌ Error processing ${file}: ${result.error}`)
+      } else if (result.changes > 0) {
+        console.log(`✏️  Modified ${file}: ${result.changes} changes`)
+      } else {
+        console.log(`✅ No changes needed: ${file}`)
+      }
       
       // Accumulate hazards
       if (result.hazards) {
@@ -150,6 +167,7 @@ export async function processFiles(options = {}) {
   )
   
   const allResults = await Promise.all(processPromises)
+  console.log(`🎉 Finished processing all files!`)
   
   // Check for critical hazards that should fail build
   const shouldFail = config.failOnHazards && totalHazards.invisibles_bidi > 0
@@ -165,6 +183,7 @@ export async function processFiles(options = {}) {
       errors,
       totalChanges
     },
-    hazards: totalHazards
+    hazards: totalHazards,
+    totalFiles: uniqueFiles.length
   }
 }

@@ -9,6 +9,11 @@ import { formatResults } from './formatter.js'
  */
 async function main() {
   try {
+    // Quick installation check
+    console.log('🔧 Checking installation...')
+    console.log(`   Node.js version: ${process.version}`)
+    console.log(`   Working directory: ${process.cwd()}`)
+    
     const options = parseArgs()
     
     if (options.help) {
@@ -23,16 +28,18 @@ async function main() {
     
     // Show startup info
     console.log('🤖→👤 Human Touch - Making AI text human-readable...')
-    console.log(`📁 Patterns: ${options.patterns.join(', ')}`)
+    console.log(`📁 Searching for files matching: ${options.patterns.join(', ')}`)
     console.log(`🔧 Aggressive mode: ${options.aggressive ? 'YES' : 'NO'}`)
     console.log(`💾 Create backups: ${options.createBackup ? 'YES' : 'NO'}`)
-    console.log(`⚡ Concurrency: ${options.maxConcurrency}`)
+    console.log(`⚡ Processing ${options.maxConcurrency} files at once`)
     console.log(`🚨 Fail on hazards: ${options.failOnHazards ? 'YES' : 'NO'}`)
     if (options.dryRun) console.log('🔍 DRY-RUN MODE: Files will not be modified')
     console.log()
     
+    console.log('📂 Scanning files...')
     // Process files
     const result = await processFiles(options)
+    console.log(`✅ Found and processed ${result.totalFiles} files`)
     
     // Format and display results
     formatResults(result, options)
@@ -51,8 +58,16 @@ async function main() {
     
   } catch (error) {
     console.error('💥 Fatal error:', error.message)
+    console.error('📍 This usually means:')
+    console.error('   • Missing dependencies (run: npm install)')
+    console.error('   • Wrong Node.js version (requires >= 18)')
+    console.error('   • Permission issues with files')
+    console.error('   • Invalid file patterns or paths')
     if (process.env.DEBUG) {
+      console.error('\n🔍 Stack trace:')
       console.error(error.stack)
+    } else {
+      console.error('\n💡 For more details, run with: DEBUG=1 human-touch ...')
     }
     process.exit(1)
   }
