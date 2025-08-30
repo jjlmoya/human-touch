@@ -1,6 +1,6 @@
 {
   "name": "human-touch",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Transform AI-generated text into human-readable content by normalizing Unicode characters, fixing typography, and removing digital artifacts",
   "main": "src/index.js",
   "type": "module",
