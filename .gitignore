@@ -48,3 +48,6 @@ coverage/
 # Logs
 logs/
 *.log
+
+# Claude Code settings (local only)
+.claude/
